@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export default function connectDB() {
-    const MONGODB_URI = "mongodb://localhost:27017/Electroplating";
+    const MONGODB_URI = process.env.MONGODB_URI;
 
     if (!MONGODB_URI) {
         throw new Error("Please define MONGODB_URI in your environment variables.");
