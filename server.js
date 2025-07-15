@@ -10,7 +10,7 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(cors({
-    origin: "https://electroplating-frontend.vercel.app/",
+    origin: "https://electroplating-frontend.vercel.app",
     methods: ['GET','POST','PUT','DELETE']
 }))
 
