@@ -4,6 +4,7 @@ const orderSchema = mongoose.Schema(
     {
         "itemName": { type: String, require: true },
         "customer": { type: String, require: true },
+        "customerid": { type: String, require: true },
         "material": { type: String, require: true },
         "quantity": { type: Number, require: true },
         "baseCost": { type: Number, require: true },
