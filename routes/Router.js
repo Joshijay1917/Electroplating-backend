@@ -68,6 +68,17 @@ router.post('/addorder', async (req, res) => {
     return res.status(200).json({msg: `Order created successfully`});
 })
 
+router.post('/currentcustomerorder', async(req, res) => {
+    const customerid = req.body.customersid
+
+    try {
+        const order = await Order.find({customerid: customerid})
+        return res.json(order)
+    } catch (error) {
+        return res.json({msg:"failed to get orders of currentCustomer", status:400})
+    }
+})
+
 router.delete('/delete', async(req, res) => {
     console.log("Delete request:", req.body.customerID);
 
