@@ -1,6 +1,7 @@
 import express from 'express'
 import Customer from '../model/Customer.js';
 import Order from '../model/Order.js';
+import PDFDocument from 'pdfkit'
 
 const router = express.Router();
 
@@ -66,6 +67,93 @@ router.post('/addorder', async (req, res) => {
     // let finalorder = await Order.findOne({itemName: order.itemName})
 
     return res.status(200).json({msg: `Order created successfully`});
+})
+
+router.post('/generate-invoice', async (req, res) => {
+    const customerid = req.body.id;
+    try {
+        const customer = await Customer.findById(customerid)
+        const orders = await Order.find({
+            customerid: customerid
+        })
+
+        if (!orders.length) {
+            return res.json({ msg: 'No orders found for this customer', status: 400 });
+        }
+
+        // Create PDF
+        const doc = new PDFDocument({ margin: 50 });
+
+        // Set response headers
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=invoice_${customer.name}.pdf`);
+
+        // Pipe PDF to response
+        doc.pipe(res);
+
+        // Add company header
+        doc
+            .fontSize(20)
+            .text('Harshad Electroplating', { align: 'center' })
+            .moveDown(0.5);
+
+        // Add customer details
+        doc
+            .fontSize(12)
+            .text(`Customer Name: ${customer.name}`)
+            .text(`Phone: ${customer.phone}`)
+            .text(`Bill Month: 18/07`)
+            .moveDown(1);
+
+        // Create table headers with blue background
+        doc
+            .fillColor('#1565C0') // Blue color
+            .font('Helvetica-Bold')
+            .text('Item Name', 50, doc.y)
+            .text('Material', 150, doc.y)
+            .text('Plating 1', 250, doc.y)
+            .text('Plating 2', 300, doc.y)
+            .text('Plating 3', 350, doc.y)
+            .text('Qty', 400, doc.y)
+            .text('Total', 450, doc.y)
+            .moveDown(0.5);
+
+        // Reset text color
+        doc.fillColor('#000000').font('Helvetica');
+
+        // Add order items
+        let finalTotal = 0;
+        orders.forEach(order => {
+                // const itemTotal = order.quantity * order.price;
+                finalTotal += order.total;
+
+                doc
+                    .text(order.itemName, 50)
+                    .text(order.material, 150)
+                    .text(order.plating.forEach(p => p.price) || '-', 250)
+                    .text(order.quantity.toString(), 400)
+                    .text(`₹${order.total.toFixed(2)}`, 450)
+                    .moveDown(0.5);
+        });
+
+        // Add final total
+        doc
+            .moveTo(400, doc.y)
+            .lineTo(550, doc.y)
+            .stroke()
+            .moveDown(0.5)
+            .font('Helvetica-Bold')
+            .text(`Final Total: ₹${finalTotal.toFixed(2)}`, { align: 'right' });
+
+        // Finalize PDF
+        doc.end();
+
+        // return res.json({msg: 'PDF Generate Successfully'})
+
+    } catch (error) {
+        console.error(error);
+        return res.json({ msg: 'Error generating invoice', status: 400 });
+    }
 })
 
 router.post('/currentcustomerorder', async(req, res) => {
