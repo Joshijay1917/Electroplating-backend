@@ -71,11 +71,26 @@ router.post('/addorder', async (req, res) => {
 
 router.post('/generate-invoice', async (req, res) => {
     const customerid = req.body.id;
+    const { From, To } = req.body.Date;
+    
     try {
+        const startDate = new Date(`${From}-01T00:00:00.000Z`);
+        const endDate = new Date(`${To}-01T00:00:00.000Z`);
+        endDate.setMonth(endDate.getMonth() + 1);
+        
         const customer = await Customer.findById(customerid)
         const orders = await Order.find({
-            customerid: customerid
-        })
+            $and: [
+            {
+                customerid: customerid
+            },
+            {
+                createdAt: {
+                    $gte: startDate,
+                    $lt: endDate
+                }
+            }
+        ]})
 
         if (!orders.length) {
             return res.json({ msg: 'No orders found for this customer', status: 400 });
