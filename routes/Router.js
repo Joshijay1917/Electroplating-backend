@@ -114,11 +114,9 @@ router.post('/generate-invoice', async (req, res) => {
            .font('Helvetica-Bold')
            .text('Item Name', 50, y + 5)
            .text('Material', 150, y + 5)
-           .text('Plating 1', 250, y + 5)
-           .text('Plating 2', 300, y + 5)
-           .text('Plating 3', 350, y + 5)
-           .text('Qty', 400, y + 5)
-           .text('Total', 450, y + 5);
+           .text('Total Plate Price', 250, y + 5)
+           .text('Qty', 350, y + 5)
+           .text('Total', 400, y + 5);
         y += 30; // Move down after headers
 
         // Reset styles for table content
@@ -134,32 +132,28 @@ router.post('/generate-invoice', async (req, res) => {
                .fill()
                .fillColor('#000000');
         }
-    
-        // Display plating prices (fixed the forEach issue)
-        const platings = order.plating || [];
-        const plating1 = platings[0]?.price || '-';
-        const plating2 = platings[1]?.price || '-';
-        const plating3 = platings[2]?.price || '-';
+            let totalPrice = 0;
+            order.plating.forEach(p => {
+                totalPrice += p.price
+            })
 
         doc.text(order.itemName, 50, y + 5)
             .text(order.material, 150, y + 5)
-            .text(plating1, 250, y + 5)
-            .text(plating2, 300, y + 5)
-            .text(plating3, 350, y + 5)
-            .text(order.quantity.toString(), 400, y + 5)
-            .text(`₹${order.total.toFixed(2)}`, 450, y + 5);
+            .text(totalPrice, 250, y + 5)
+            .text(order.quantity.toString(), 350, y + 5)
+            .text(`${String.fromCharCode(8377) + order.total.toFixed(2)}`, 400, y + 5);
     
             finalTotal += order.total;
             y += 20; // Move down for next row
         });
 
         // Add final total
-        y += 20; // Extra space before total
-         doc.moveTo(400, y)
+        y += 40; // Extra space before total
+         doc.moveTo(550, y)
         .lineTo(550, y)
         .stroke()
         .font('Helvetica-Bold')
-        .text(`Final Total: ₹${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
+        .text(`Final Total: ${String.fromCharCode(8377) + finalTotal.toFixed(2)}`, { align: 'right', continued: false });
 
         // Finalize PDF
         doc.end();
