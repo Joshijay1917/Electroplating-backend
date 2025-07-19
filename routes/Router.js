@@ -93,29 +93,29 @@ router.post('/generate-invoice', async (req, res) => {
 
         // Add company header
         doc
-            .fontSize(20)
+            .fontSize(25)
             .text('Harshad Electroplating', { align: 'center' })
             .moveDown(0.5);
 
         // Add customer details
         doc
-            .fontSize(12)
-            .text(`Customer Name: ${customer.name}`)
-            .text(`Phone: ${customer.phone}`)
-            .text(`Bill Month: 18/07`)
+            .fontSize(15)
+            .text(`Customer Name: ${customer.name}`, 100, 150)
+            .text(`Phone: ${customer.phone}`, 100, 160)
+            .text(`Bill Month: 18/07`, 100, 170)
             .moveDown(1);
 
         // Create table headers with blue background
         doc
             .fillColor('#1565C0') // Blue color
             .font('Helvetica-Bold')
-            .text('Item Name', 50, doc.y)
-            .text('Material', 150, doc.y)
-            .text('Plating 1', 250, doc.y)
-            .text('Plating 2', 300, doc.y)
-            .text('Plating 3', 350, doc.y)
-            .text('Qty', 400, doc.y)
-            .text('Total', 450, doc.y)
+            .text('Item Name', 50, 200)
+            .text('Material', 150, 200)
+            .text('Plating 1', 250, 200)
+            .text('Plating 2', 300, 200)
+            .text('Plating 3', 350, 200)
+            .text('Qty', 400, 200)
+            .text('Total', 450, 200)
             .moveDown(0.5);
 
         // Reset text color
@@ -138,8 +138,8 @@ router.post('/generate-invoice', async (req, res) => {
 
         // Add final total
         doc
-            .moveTo(400, doc.y)
-            .lineTo(550, doc.y)
+            .moveTo(400)
+            .lineTo(550)
             .stroke()
             .moveDown(0.5)
             .font('Helvetica-Bold')
