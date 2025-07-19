@@ -140,9 +140,9 @@ router.post('/generate-invoice', async (req, res) => {
 
         doc.text(order.itemName, 50, y + 5)
             .text(order.material, 150, y + 5)
-            .text(totalPrice, 250, y + 5)
+            .text(platingSum, 250, y + 5)
             .text(order.quantity.toString(), 400, y + 5)
-            .text(`Rs.${platingSum.toFixed(2)}`, 450, y + 5);
+            .text(`Rs.${order.total.toFixed(2)}`, 450, y + 5);
     
             finalTotal += order.total;
             y += 20; // Move down for next row
