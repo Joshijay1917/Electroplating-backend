@@ -97,7 +97,7 @@ router.post('/generate-invoice', async (req, res) => {
     // Add company header
     doc.fontSize(25)
        .text('Harshad Electroplating', { align: 'center' });
-    y += 30; // Move down after header
+    y += 50; // Move down after header
 
     // Add customer details
     doc.fontSize(12)
@@ -115,8 +115,8 @@ router.post('/generate-invoice', async (req, res) => {
            .text('Item Name', 50, y + 5)
            .text('Material', 150, y + 5)
            .text('Total Plate Price', 250, y + 5)
-           .text('Qty', 350, y + 5)
-           .text('Total', 400, y + 5);
+           .text('Qty', 400, y + 5)
+           .text('Total', 450, y + 5);
         y += 30; // Move down after headers
 
         // Reset styles for table content
@@ -132,16 +132,17 @@ router.post('/generate-invoice', async (req, res) => {
                .fill()
                .fillColor('#000000');
         }
-            let totalPrice = 0;
-            order.plating.forEach(p => {
-                totalPrice += p.price
-            })
+            //let totalPrice = 0;
+            const platingSum = order.plating.reduce((sum, p) => sum + p.price, 0);
+            //order.plating.forEach(p => {
+                //totalPrice += p.price.toFixed(2)
+            //})
 
         doc.text(order.itemName, 50, y + 5)
             .text(order.material, 150, y + 5)
             .text(totalPrice, 250, y + 5)
-            .text(order.quantity.toString(), 350, y + 5)
-            .text(`${String.fromCharCode(8377) + order.total.toFixed(2)}`, 400, y + 5);
+            .text(order.quantity.toString(), 400, y + 5)
+            .text(`Rs.${platingSum.toFixed(2)}`, 450, y + 5);
     
             finalTotal += order.total;
             y += 20; // Move down for next row
@@ -153,7 +154,7 @@ router.post('/generate-invoice', async (req, res) => {
         .lineTo(550, y)
         .stroke()
         .font('Helvetica-Bold')
-        .text(`Final Total: ${String.fromCharCode(8377) + finalTotal.toFixed(2)}`, { align: 'right', continued: false });
+        .text(Final Total: `Rs.${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
 
         // Finalize PDF
         doc.end();
