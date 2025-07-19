@@ -149,6 +149,8 @@ router.post('/generate-invoice', async (req, res) => {
         order.plating.forEach(p => {
             doc.text(p.type, 250, y + 5)
                 .text(p.price, 320, y + 5)
+
+            y += 20;
         })
     
             finalTotal += order.total;
@@ -157,8 +159,8 @@ router.post('/generate-invoice', async (req, res) => {
 
         // Add final total
         y += 40; // Extra space before total
-         doc.moveTo(400, y)
-        .lineTo(400, y)
+         doc.moveTo(400, y+40)
+        .lineTo(400, y+40)
         .stroke()
         .font('Helvetica-Bold')
         .text(`Final Total: Rs.${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
