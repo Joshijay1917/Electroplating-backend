@@ -6,7 +6,7 @@ import PDFDocument from 'pdfkit'
 const router = express.Router();
 
 router.post('/addcustomer', async (req, res) => {
-    const data = await req.body;
+    const data = await req.body
     data.name = data.name.toLowerCase()
 
     if (!data.name || !data.phone) {
