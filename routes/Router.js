@@ -129,11 +129,11 @@ router.post('/generate-invoice', async (req, res) => {
            .font('Helvetica-Bold')
            .text('Item Name', 70, y + 5)
            .text('Order Date', 150, y + 5)
-           .text('Material', 250, y + 5)
+           .text('Material', 220, y + 5)
            .text('Plating', 300, y + 5)
            .text('Rate/Plate', 350, y + 5)
            .text('Qty', 420, y + 5)
-           .text('Total', 450, y + 5);
+           .text('Total', 460, y + 5);
         y += 30; // Move down after headers
 
         // Reset styles for table content
@@ -157,11 +157,11 @@ router.post('/generate-invoice', async (req, res) => {
 
         doc.text(order.itemName, 70, y + 5)
             .text(new Date(order.createdAt).toLocaleDateString(), 150, y + 5)
-            .text(order.material, 250, y + 5)
+            .text(order.material, 220, y + 5)
             //.text(platingSum, 250, y + 5)
             //.text(platingSum, 320, y + 5)
             .text(order.quantity.toString(), 420, y + 5)
-            .text(`Rs.${order.total.toFixed(2)}`, 450, y + 5);
+            .text(`Rs.${order.total.toFixed(2)}`, 460, y + 5);
 
         order.plating.forEach(p => {
                 doc.text(p.type, 300, y + 5)
