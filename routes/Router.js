@@ -147,17 +147,9 @@ router.post('/generate-invoice', async (req, res) => {
             .text(`Rs.${order.total.toFixed(2)}`, 450, y + 5);
 
         order.plating.forEach(p => {
-            if (orders.indexOf(order) % 2 === 0) {
-                doc.fillColor('#f5f5f5')
-                   .rect(50, y, 500, 20)
-                   .fill()
-                   .fillColor('#000000')
-                    .text(p.type, 250, y + 5)
-                    .text(`Rs.${p.price}`, 320, y + 5)
-            } else {
                 doc.text(p.type, 250, y + 5)
                     .text(`Rs.${p.price}`, 320, y + 5)
-            }
+            
 
             y += 20;
         })
