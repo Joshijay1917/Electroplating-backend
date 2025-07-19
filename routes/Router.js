@@ -127,12 +127,13 @@ router.post('/generate-invoice', async (req, res) => {
            .fill()
            .fillColor('#ffffff') // White text
            .font('Helvetica-Bold')
-           .text('Item Name', 50, y + 5)
+           .text('Item Name', 70, y + 5)
+           .text('Order Date', 100, y + 5)
            .text('Material', 150, y + 5)
-           .text('Plating', 250, y + 5)
-           .text('Rate/Plate', 320, y + 5)
-           .text('Qty', 400, y + 5)
-           .text('Total', 450, y + 5);
+           .text('Plating', 200, y + 5)
+           .text('Rate/Plate', 280, y + 5)
+           .text('Qty', 350, y + 5)
+           .text('Total', 400, y + 5);
         y += 30; // Move down after headers
 
         // Reset styles for table content
@@ -154,16 +155,17 @@ router.post('/generate-invoice', async (req, res) => {
                 //totalPrice += p.price.toFixed(2)
             //})
 
-        doc.text(order.itemName, 50, y + 5)
+        doc.text(order.itemName, 70, y + 5)
+            .text(new Date(order.createdAt).toLocaleDateString(), 100, y + 5)
             .text(order.material, 150, y + 5)
             //.text(platingSum, 250, y + 5)
             //.text(platingSum, 320, y + 5)
-            .text(order.quantity.toString(), 400, y + 5)
-            .text(`Rs.${order.total.toFixed(2)}`, 450, y + 5);
+            .text(order.quantity.toString(), 350, y + 5)
+            .text(`Rs.${order.total.toFixed(2)}`, 400, y + 5);
 
         order.plating.forEach(p => {
-                doc.text(p.type, 250, y + 5)
-                    .text(`Rs.${p.price}`, 320, y + 5)
+                doc.text(p.type, 200, y + 5)
+                    .text(`Rs.${p.price}`, 280, y + 5)
             
 
             y += 20;
