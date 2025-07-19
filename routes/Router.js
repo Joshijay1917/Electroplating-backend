@@ -151,7 +151,7 @@ router.post('/generate-invoice', async (req, res) => {
                 doc.fillColor('#f5f5f5')
                    .rect(50, y, 500, 20)
                    .fill()
-                   .fillColor('#000000');
+                   .fillColor('#000000')
                     .text(p.type, 250, y + 5)
                     .text(`Rs.${p.price}`, 320, y + 5)
             } else {
