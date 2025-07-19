@@ -91,59 +91,75 @@ router.post('/generate-invoice', async (req, res) => {
         // Pipe PDF to response
         doc.pipe(res);
 
-        // Add company header
-        doc
-            .fontSize(25)
-            .text('Harshad Electroplating', { align: 'center' })
-            .moveDown(0.5);
+        // Track current Y position dynamically
+    let y = 50;
 
-        // Add customer details
-        doc
-            .fontSize(15)
-            .text(`Customer Name: ${customer.name}`, 100, 150)
-            .text(`Phone: ${customer.phone}`, 100, 160)
-            .text(`Bill Month: 18/07`, 100, 170)
-            .moveDown(1);
+    // Add company header
+    doc.fontSize(25)
+       .text('Harshad Electroplating', { align: 'center' });
+    y += 30; // Move down after header
+
+    // Add customer details
+    doc.fontSize(12)
+       .text(`Customer Name: ${customer.name}`, 50, y)
+       .text(`Phone: ${customer.phone}`, 50, y + 15)
+       .text(`Bill Month: ${new Date().toLocaleDateString()}`, 50, y + 30);
+        y += 60; // Move down after customer details
 
         // Create table headers with blue background
-        doc
-            .fillColor('#1565C0') // Blue color
-            .font('Helvetica-Bold')
-            .text('Item Name', 50, 200)
-            .text('Material', 150, 200)
-            .text('Plating 1', 250, 200)
-            .text('Plating 2', 300, 200)
-            .text('Plating 3', 350, 200)
-            .text('Qty', 400, 200)
-            .text('Total', 450, 200)
-            .moveDown(0.5);
+        doc.fillColor('#1565C0') // Blue background
+           .rect(50, y, 500, 20) // x, y, width, height
+           .fill()
+           .fillColor('#ffffff') // White text
+           .font('Helvetica-Bold')
+           .text('Item Name', 50, y + 5)
+           .text('Material', 150, y + 5)
+           .text('Plating 1', 250, y + 5)
+           .text('Plating 2', 300, y + 5)
+           .text('Plating 3', 350, y + 5)
+           .text('Qty', 400, y + 5)
+           .text('Total', 450, y + 5);
+        y += 30; // Move down after headers
 
-        // Reset text color
+        // Reset styles for table content
         doc.fillColor('#000000').font('Helvetica');
 
         // Add order items
         let finalTotal = 0;
         orders.forEach(order => {
-                // const itemTotal = order.quantity * order.price;
-                finalTotal += order.total;
+        // Draw alternating row background
+        if (orders.indexOf(order) % 2 === 0) {
+            doc.fillColor('#f5f5f5')
+               .rect(50, y, 500, 20)
+               .fill()
+               .fillColor('#000000');
+        }
+    
+        // Display plating prices (fixed the forEach issue)
+        const platings = order.plating || [];
+        const plating1 = platings[0]?.price || '-';
+        const plating2 = platings[1]?.price || '-';
+        const plating3 = platings[2]?.price || '-';
 
-                doc
-                    .text(order.itemName, 50)
-                    .text(order.material, 150)
-                    .text(order.plating.forEach(p => p.price) || '-', 250)
-                    .text(order.quantity.toString(), 400)
-                    .text(`₹${order.total.toFixed(2)}`, 450)
-                    .moveDown(0.5);
+        doc.text(order.itemName, 50, y + 5)
+            .text(order.material, 150, y + 5)
+            .text(plating1, 250, y + 5)
+            .text(plating2, 300, y + 5)
+            .text(plating3, 350, y + 5)
+            .text(order.quantity.toString(), 400, y + 5)
+            .text(`₹${order.total.toFixed(2)}`, 450, y + 5);
+    
+            finalTotal += order.total;
+            y += 20; // Move down for next row
         });
 
         // Add final total
-        doc
-            .moveTo(400)
-            .lineTo(550)
-            .stroke()
-            .moveDown(0.5)
-            .font('Helvetica-Bold')
-            .text(`Final Total: ₹${finalTotal.toFixed(2)}`, { align: 'right' });
+        y += 20; // Extra space before total
+         doc.moveTo(400, y)
+        .lineTo(550, y)
+        .stroke()
+        .font('Helvetica-Bold')
+        .text(`Final Total: ₹${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
 
         // Finalize PDF
         doc.end();
