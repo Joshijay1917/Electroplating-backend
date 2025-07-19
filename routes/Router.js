@@ -114,7 +114,8 @@ router.post('/generate-invoice', async (req, res) => {
            .font('Helvetica-Bold')
            .text('Item Name', 50, y + 5)
            .text('Material', 150, y + 5)
-           .text('Total Plate Price', 250, y + 5)
+           .text('Plating', 250, y + 5)
+           .text('Rate/Plate', 320, y + 5)
            .text('Qty', 400, y + 5)
            .text('Total', 450, y + 5);
         y += 30; // Move down after headers
@@ -140,9 +141,15 @@ router.post('/generate-invoice', async (req, res) => {
 
         doc.text(order.itemName, 50, y + 5)
             .text(order.material, 150, y + 5)
-            .text(platingSum, 250, y + 5)
+            //.text(platingSum, 250, y + 5)
+            //.text(platingSum, 320, y + 5)
             .text(order.quantity.toString(), 400, y + 5)
             .text(`Rs.${order.total.toFixed(2)}`, 450, y + 5);
+
+        order.plating.forEach(p => {
+            doc.text(p.type, 250, y + 5)
+                .text(p.price, 320, y + 5)
+        })
     
             finalTotal += order.total;
             y += 20; // Move down for next row
@@ -150,8 +157,8 @@ router.post('/generate-invoice', async (req, res) => {
 
         // Add final total
         y += 40; // Extra space before total
-         doc.moveTo(550, y)
-        .lineTo(550, y)
+         doc.moveTo(400, y)
+        .lineTo(400, y)
         .stroke()
         .font('Helvetica-Bold')
         .text(`Final Total: Rs.${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
