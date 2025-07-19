@@ -154,7 +154,7 @@ router.post('/generate-invoice', async (req, res) => {
         .lineTo(550, y)
         .stroke()
         .font('Helvetica-Bold')
-        .text(Final Total: `Rs.${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
+        .text(`Final Total: Rs.${finalTotal.toFixed(2)}`, { align: 'right', continued: false });
 
         // Finalize PDF
         doc.end();
