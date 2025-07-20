@@ -214,6 +214,7 @@ router.delete('/delete', async(req, res) => {
     if(req.body.customerID) {
         try {
             await Customer.deleteOne({_id: req.body.customerID})
+            await Order.deleteMany({ customerid: req.body.customerID })
             res.status(200).json({msg:"Customer Delete Successfully"})
         } catch (error) {
             res.status(400).json({msg:"Cannot delete customer: " + error, status: 400})
