@@ -69,20 +69,23 @@ router.post('/addorder', async (req, res) => {
     return res.status(200).json({msg: `Order created successfully`});
 })
 
-router.post('/generate-invoice', async (req, res) => {
-    const customerid = req.body.id;
-    const { From, To } = req.body.Date;
+router.get('/generate-invoice', async (req, res) => {
+    const { 
+        id,
+        From, 
+        To
+      } = req.query;
     
     try {
         const startDate = new Date(`${From}-01T00:00:00.000Z`);
         const endDate = new Date(`${To}-01T00:00:00.000Z`);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        const customer = await Customer.findById(customerid)
+        const customer = await Customer.findById(id)
         const orders = await Order.find({
             $and: [
             {
-                customerid: customerid
+                customerid: id
             },
             {
                 createdAt: {
