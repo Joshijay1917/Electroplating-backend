@@ -2,8 +2,35 @@ import express from 'express'
 import Customer from '../model/Customer.js';
 import Order from '../model/Order.js';
 import PDFDocument from 'pdfkit'
+import Admin from '../model/Admin.js';
 
 const router = express.Router();
+
+router.post('/login', async (req,res) => {
+    const {username, password} = req.body;
+
+    try {
+        const user = await Admin.findOne({username})
+
+        if(!user) {
+            return res.json({msg: "User not registered", status:400})
+        }
+
+        // const isMatch = await bcrypt.compare(password, user.password)
+        
+        // if(!isMatch) {
+        //     return res.json({msg: "Wrong password!", status:400})
+        // }
+        if(password !== user.password) {
+            return res.json({msg: "Wrong password!", status:400})
+        }
+
+        return res.json({msg: "Logged In Successfully!", status:200})
+
+    } catch (error) {
+        return res.json({msg: "Failed to fetch in Database:" + error, status:400})
+    }
+})
 
 router.post('/addcustomer', async (req, res) => {
     const data = await req.body
